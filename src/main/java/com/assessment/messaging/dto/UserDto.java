@@ -2,12 +2,12 @@ package com.assessment.messaging.dto;
 
 import com.assessment.messaging.entity.User;
 
-public record UserDTO(Long Id, String nickName) {
-    public static UserDTO fromUser(User user) {
-        return new UserDTO(user.getId(), user.getNickName());
+public record UserDto(Long Id, String nickName) {
+    public static UserDto fromUser(User user) {
+        return new UserDto(user.getId(), user.getNickName());
     }
 
-    public static User toUser(UserDTO userDTO) {
+    public static User toUser(UserDto userDTO) {
         User user = new User();
         user.setId(userDTO.Id);
         user.setNickName(userDTO.nickName);

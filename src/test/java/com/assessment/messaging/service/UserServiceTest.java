@@ -1,6 +1,6 @@
 package com.assessment.messaging.service;
 
-import com.assessment.messaging.dto.UserDTO;
+import com.assessment.messaging.dto.UserDto;
 import com.assessment.messaging.entity.User;
 import com.assessment.messaging.exception.ConflictException;
 import com.assessment.messaging.repository.UserRepository;
@@ -28,12 +28,12 @@ public class UserServiceTest {
         User user = new User();
         user.setNickName(nickname);
 
-        UserDTO userDto = UserDTO.fromUser(user);
+        UserDto userDto = UserDto.fromUser(user);
 
         when(userRepository.findByNickName(nickname)).thenReturn(null);
         when(userRepository.save(any(User.class))).thenReturn(user);
 
-        UserDTO result = userService.createUser(userDto);
+        UserDto result = userService.createUser(userDto);
 
         assertNotNull(result);
         assertEquals(userDto, result);
@@ -50,7 +50,7 @@ public class UserServiceTest {
 
         when(userRepository.findByNickName(nickname)).thenReturn(user);
 
-        ConflictException exception = assertThrows(ConflictException.class, () -> userService.createUser(UserDTO.fromUser(user)));
+        ConflictException exception = assertThrows(ConflictException.class, () -> userService.createUser(UserDto.fromUser(user)));
 
         assertEquals(STR."Nickname is not unique: \{nickname}", exception.getMessage());
         verify(userRepository, times(1)).findByNickName(nickname);

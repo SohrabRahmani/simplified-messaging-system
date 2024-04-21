@@ -1,6 +1,6 @@
 package com.assessment.messaging.controller;
 
-import com.assessment.messaging.dto.UserDTO;
+import com.assessment.messaging.dto.UserDto;
 import com.assessment.messaging.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -27,7 +27,7 @@ public class UserController {
     @Operation(summary = "Create a user", description = "Create a new user with the provided details.")
     @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "User created successfully")})
     @PostMapping(value = "/user")
-    public ResponseEntity<UserDTO> createUser(@RequestBody final UserDTO userDto) {
+    public ResponseEntity<UserDto> createUser(@RequestBody final UserDto userDto) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(userService.createUser(userDto));
     }
