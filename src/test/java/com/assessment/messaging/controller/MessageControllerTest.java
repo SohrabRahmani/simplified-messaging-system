@@ -1,6 +1,6 @@
 package com.assessment.messaging.controller;
 
-import com.assessment.messaging.dto.MessageDTO;
+import com.assessment.messaging.dto.MessageDto;
 import com.assessment.messaging.entity.Message;
 import com.assessment.messaging.entity.User;
 import com.assessment.messaging.repository.MessageRepository;
@@ -70,7 +70,7 @@ class MessageControllerTest {
 
     @Test
     public void shouldCreateMessage() throws Exception {
-         String requestBody = """
+        String requestBody = """
                 {
                     "recipientId": 2,
                     "content": "Hello World!"
@@ -78,13 +78,13 @@ class MessageControllerTest {
                 """;
         when(userRepository.findById(1L)).thenReturn(Optional.of(createUser(1L, "Alex")));
         when(userRepository.findById(2L)).thenReturn(Optional.of(createUser(2L, "Hana")));
-        when(messageRepository.save(any())).thenReturn(MessageDTO.toMessage(new MessageDTO(1L, 1L, 2L, "Hello World!", LocalDateTime.now())));
-        doNothing().when(mqService).sendMessage(anyString(), any(MessageDTO.class));
+        when(messageRepository.save(any())).thenReturn(MessageDto.toMessage(new MessageDto(1L, 1L, 2L, "Hello World!", LocalDateTime.now())));
+        doNothing().when(mqService).sendMessage(anyString(), any(MessageDto.class));
 
         mockMvc.perform(post("/api/message")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody)
-                        .header("Id", 1))
+                        .header("userId", 1))
                 .andExpect(status().isCreated());
     }
 
@@ -118,7 +118,7 @@ class MessageControllerTest {
         mockMvc.perform(post("/api/message")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody)
-                        .header("Id", 5))
+                        .header("userId", 5))
                 .andExpect(status().isNotFound());
     }
 
@@ -136,7 +136,7 @@ class MessageControllerTest {
         mockMvc.perform(post("/api/message")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody)
-                        .header("Id", 1))
+                        .header("userId", 1))
                 .andExpect(status().isNotFound());
     }
 

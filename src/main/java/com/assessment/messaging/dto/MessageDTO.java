@@ -5,9 +5,9 @@ import com.assessment.messaging.entity.User;
 
 import java.time.LocalDateTime;
 
-public record MessageDTO(Long id, Long senderId, Long recipientId, String content, LocalDateTime timestamp) {
-    public static MessageDTO fromMessage(Message message) {
-        return new MessageDTO(
+public record MessageDto(Long id, Long senderId, Long recipientId, String content, LocalDateTime timestamp) {
+    public static MessageDto fromMessage(Message message) {
+        return new MessageDto(
                 message.getId(),
                 message.getSender().getId(),
                 message.getRecipient().getId(),
@@ -16,7 +16,7 @@ public record MessageDTO(Long id, Long senderId, Long recipientId, String conten
         );
     }
 
-    public static Message toMessage(MessageDTO messageDTO) {
+    public static Message toMessage(MessageDto messageDTO) {
         Message message = new Message();
         message.setId(messageDTO.id());
 

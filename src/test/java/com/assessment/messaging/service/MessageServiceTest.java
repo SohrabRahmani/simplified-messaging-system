@@ -1,7 +1,6 @@
 package com.assessment.messaging.service;
 
-import com.assessment.messaging.dto.MessageDTO;
-import com.assessment.messaging.entity.Message;
+import com.assessment.messaging.dto.MessageDto;
 import com.assessment.messaging.entity.User;
 import com.assessment.messaging.exception.IllegalArgumentException;
 import com.assessment.messaging.exception.NotFoundException;
@@ -12,11 +11,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
@@ -39,7 +36,6 @@ public class MessageServiceTest {
         Long senderId = 1L;
         Long recipientId = 2L;
         String content = "Hello World!";
-        LocalDateTime timestamp = LocalDateTime.now();
 
         User sender = new User();
         sender.setId(senderId);
@@ -47,28 +43,21 @@ public class MessageServiceTest {
         User recipient = new User();
         recipient.setId(recipientId);
 
-        MessageDTO messageDTO = new MessageDTO(null, senderId, recipientId, content, null);
+        MessageDto messageDTO = new MessageDto(null, senderId, recipientId, content, null);
 
-        Message savedMessage = new Message();
-        savedMessage.setId(1L);
-        savedMessage.setSender(sender);
-        savedMessage.setRecipient(recipient);
-        savedMessage.setContent(content);
-        savedMessage.setTimestamp(timestamp);
 
         when(userRepository.findById(senderId)).thenReturn(Optional.of(sender));
         when(userRepository.findById(recipientId)).thenReturn(Optional.of(recipient));
-        when(messageRepository.save(any(Message.class))).thenReturn(savedMessage);
 
-        Message result = messageService.sendMessage(senderId, messageDTO);
+        MessageDto result = messageService.sendMessage(senderId, messageDTO);
 
         assertNotNull(result);
-        assertEquals(savedMessage, result);
-        assertEquals(sender, result.getSender());
-        assertEquals(recipient, result.getRecipient());
-        assertEquals(content, result.getContent());
-        assertNotNull(result.getTimestamp());
+        assertEquals(sender.getId(), result.senderId());
+        assertEquals(recipient.getId(), result.recipientId());
+        assertEquals(content, result.content());
+        assertNotNull(result.timestamp());
         verify(mqService, times(1)).sendMessage(anyString(), anyString());
+        verifyNoInteractions(messageRepository);
     }
 
     @Test
@@ -76,7 +65,7 @@ public class MessageServiceTest {
         Long senderId = 1L;
         String content = "Hello World!";
 
-        MessageDTO messageDTO = new MessageDTO(null, senderId, senderId, content, null);
+        MessageDto messageDTO = new MessageDto(null, senderId, senderId, content, null);
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
                 () -> messageService.sendMessage(senderId, messageDTO));
@@ -91,7 +80,7 @@ public class MessageServiceTest {
         Long recipientId = 2L;
         String content = "Hello World!";
 
-        MessageDTO messageDTO = new MessageDTO(null, senderId, recipientId, content, null);
+        MessageDto messageDTO = new MessageDto(null, senderId, recipientId, content, null);
 
         when(userRepository.findById(senderId)).thenReturn(Optional.empty());
 
@@ -112,7 +101,7 @@ public class MessageServiceTest {
         User sender = new User();
         sender.setId(senderId);
 
-        MessageDTO messageDTO = new MessageDTO(null, senderId, recipientId, content, null);
+        MessageDto messageDTO = new MessageDto(null, senderId, recipientId, content, null);
 
         when(userRepository.findById(senderId)).thenReturn(Optional.of(sender));
         when(userRepository.findById(recipientId)).thenReturn(Optional.empty());

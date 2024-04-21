@@ -1,5 +1,6 @@
 package com.assessment.messaging.service;
 
+import com.assessment.messaging.dto.UserDTO;
 import com.assessment.messaging.entity.User;
 import com.assessment.messaging.exception.ConflictException;
 import com.assessment.messaging.repository.UserRepository;
@@ -14,11 +15,13 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public User insert(User user) {
+    public UserDTO createUser(UserDTO userDto) {
+        User user = UserDTO.toUser(userDto);
+
         if (!isNicknameUnique(user.getNickName())) {
             throw new ConflictException(STR."Nickname is not unique: \{user.getNickName()}");
         }
-        return userRepository.save(user);
+        return UserDTO.fromUser(userRepository.save(user));
     }
 
     private boolean isNicknameUnique(String nickname) {

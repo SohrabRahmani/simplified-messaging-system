@@ -1,6 +1,6 @@
 package com.assessment.messaging.service;
 
-import com.assessment.messaging.dto.MessageDTO;
+import com.assessment.messaging.dto.MessageDto;
 import com.assessment.messaging.entity.Message;
 import com.assessment.messaging.entity.User;
 import com.assessment.messaging.exception.IllegalArgumentException;
@@ -28,14 +28,14 @@ public class MessageService {
         this.mqService = mqService;
     }
 
-    public Message sendMessage(Long senderId, MessageDTO messageDTO) {
+    public MessageDto sendMessage(Long senderId, MessageDto messageDTO) {
         validateSenderAndRecipient(senderId, messageDTO.recipientId());
 
         User sender = userRepository.findById(senderId)
                 .orElseThrow(() -> new NotFoundException(STR."Sender user not found with ID: \{senderId}"));
 
         User recipient = userRepository.findById(messageDTO.recipientId())
-                .orElseThrow(() -> new NotFoundException("Recipient user not found with ID: " + messageDTO.recipientId()));
+                .orElseThrow(() -> new NotFoundException(STR."Recipient user not found with ID: \{messageDTO.recipientId()}"));
 
         Message message = new Message();
         message.setSender(sender);
@@ -43,22 +43,23 @@ public class MessageService {
         message.setContent(messageDTO.content());
         message.setTimestamp(LocalDateTime.now());
 
-        message = messageRepository.save(message);
-
-        mqService.sendMessage("messageQueue", toJson(MessageDTO.fromMessage(message)));
-        return message;
+        mqService.sendMessage("messageQueue", toJson(MessageDto.fromMessage(message)));
+        return MessageDto.fromMessage(message);
     }
 
-    public List<Message> getAllReceiveMessage(Long recipientId) {
-        return messageRepository.findByRecipientId(recipientId);
+    public List<MessageDto> getAllReceiveMessage(Long recipientId) {
+        return messageRepository.findByRecipientId(recipientId)
+                .stream().map(MessageDto::fromMessage).toList();
     }
 
-    public List<Message> getAllSendMessage(Long senderId) {
-        return messageRepository.findBySenderId(senderId);
+    public List<MessageDto> getAllSendMessage(Long senderId) {
+        return messageRepository.findBySenderId(senderId)
+                .stream().map(MessageDto::fromMessage).toList();
     }
 
-    public List<Message> getAllReceiveMessageFromParticularUser(Long recipientId, Long senderId) {
-        return messageRepository.findByRecipientIdAndSenderId(recipientId, senderId);
+    public List<MessageDto> getAllReceiveMessageFromParticularUser(Long recipientId, Long senderId) {
+        return messageRepository.findByRecipientIdAndSenderId(recipientId, senderId)
+                .stream().map(MessageDto::fromMessage).toList();
     }
 
     private void validateSenderAndRecipient(Long senderId, Long recipientId) {
@@ -67,14 +68,14 @@ public class MessageService {
         }
     }
 
-    private String toJson(MessageDTO messageDTO) {
+    private String toJson(MessageDto messageDTO) {
         ObjectMapper objectMapper = JsonMapper.builder()
                 .addModule(new JavaTimeModule())
                 .build();
         try {
             return objectMapper.writeValueAsString(messageDTO);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException("Error converting message to JSON", e);
+            throw new IllegalArgumentException(STR."Error converting message to JSON: \{e.getMessage()}");
         }
     }
 }

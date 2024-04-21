@@ -1,11 +1,7 @@
 package com.assessment.messaging.controller;
 
-import com.assessment.messaging.dto.UserDTO;
 import com.assessment.messaging.entity.User;
-import com.assessment.messaging.exception.ConflictException;
 import com.assessment.messaging.repository.UserRepository;
-import com.assessment.messaging.service.UserService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -13,9 +9,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -36,17 +29,17 @@ public class UserControllerTest {
     @Test
     public void shouldCreateUser() throws Exception {
         String requestBody = """
-            {
-                "nickName":"Alex"
-            }
-            """;
+                {
+                    "nickName":"Alex"
+                }
+                """;
 
         String expectedResponseBody = """
-            {
-                "Id":1,
-                "nickName":"Alex"
-            }
-            """;
+                {
+                    "Id":1,
+                    "nickName":"Alex"
+                }
+                """;
 
         User user = new User();
         user.setId(1L);
@@ -67,7 +60,7 @@ public class UserControllerTest {
                     "nickName":"Alex"
                  }
                 """;
-        when(userRepository.findByNickName("Alex")).thenReturn(createUser(1L,"Alex"));
+        when(userRepository.findByNickName("Alex")).thenReturn(createUser(1L, "Alex"));
 
         mockMvc.perform(post("/api/user")
                         .contentType(MediaType.APPLICATION_JSON)
