@@ -209,7 +209,6 @@ class MessageControllerTest {
 
         when(messageRepository.findBySenderId(1L)).thenReturn(updatedMessageList);
 
-        // When & Then
         mockMvc.perform(get("/api/message/send").header("userId", 1))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -263,7 +262,6 @@ class MessageControllerTest {
 
         when(messageRepository.findByRecipientIdAndSenderId(1L, 2L)).thenReturn(updatedMessageList);
 
-        // When & Then
         mockMvc.perform(get("/api/message/receive/2").header("userId", 1))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))

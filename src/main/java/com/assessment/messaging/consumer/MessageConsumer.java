@@ -23,15 +23,17 @@ public class MessageConsumer {
 
     @RabbitListener(queues = "messageQueue")
     public void receiveMessage(String message) {
-        ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
         try {
-            MessageDto messageDTO = objectMapper.readValue(message, MessageDto.class);
+            MessageDto messageDTO = convertJsonToMessageDto(message);
             Message entityMessage = MessageDto.toMessage(messageDTO);
             messageRepository.save(entityMessage);
-        } catch (JsonProcessingException e) {
-            logger.error("Error processing JSON message: {}", message, e);
         } catch (Exception e) {
             logger.error("Error processing message: {}", message, e);
         }
+    }
+
+    private MessageDto convertJsonToMessageDto(String jsonMessage) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
+        return objectMapper.readValue(jsonMessage, MessageDto.class);
     }
 }

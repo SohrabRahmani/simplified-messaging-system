@@ -24,7 +24,7 @@ public class MessageController {
         this.messageService = messageService;
     }
 
-    @Operation(summary = "Send a message", description = "Send a message to a user and store it in the database. Also, put it into a messaging queue.")
+    @Operation(summary = "Send a message", description = "Send a message to a user and put it into a messaging queue.")
     @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "Message sent successfully")})
     @PostMapping(value = "/message")
     public ResponseEntity<MessageDto> createMessage(

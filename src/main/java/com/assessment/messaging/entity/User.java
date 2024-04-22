@@ -43,10 +43,6 @@ public class User {
 
     @Override
     public String toString() {
-        return "User{" +
-                "Id=" + Id +
-                ", nickName='" + nickName + '\'' +
-                ", messagesSent=" + messagesSent +
-                '}';
+        return STR."User{Id=\{Id}, nickName='\{nickName}\{'\''}, messagesSent=\{messagesSent}\{'}'}";
     }
 }
