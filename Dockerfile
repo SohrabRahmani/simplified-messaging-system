@@ -11,7 +11,7 @@ COPY --from=builder /app/target/messaging-0.0.1-SNAPSHOT.jar /app/
 CMD ["java", "--enable-preview", "-jar", "/app/messaging-0.0.1-SNAPSHOT.jar"]
 
 ENV DB_URL=postgres
-ENV DB_NAME=messaging
+ENV DB_NAME=messaging_db
 ENV DB_USERNAME=messaging_user
 ENV DB_PASSWORD=messaging_password
 ENV RABBITMQ_HOST=rabbitmq
